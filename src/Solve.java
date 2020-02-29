@@ -33,11 +33,11 @@ public class Solve {
 
         // sensor list: breeze, stench, bump, scream, gold
         boolean[] sensorList;
-
+        int action = 1;
         while(!reachedGold) {
             cost--;
-            sensorList = sense(1);
-            int action = updateKnowledgeBase(sensorList);
+            sensorList = sense(action);
+            action = updateKnowledgeBase(sensorList);
             if(action == 0) {
 
             } else if(action == 1){
@@ -116,8 +116,6 @@ public class Solve {
             sensorList[4] = true;
         }
 
-
-
         return sensorList;
     }
 
@@ -190,18 +188,22 @@ public class Solve {
 
         } else if (explorerDX == 0 && explorerDY == 1) { // facing south
             if(explorerY != world.length){
-                explorerY = explorerY + 1;
-                return true;
-            } else {
-                return false;
+                if(world[explorerY][explorerX] == 'o') {
+                    explorerY = explorerY + 1;
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
         } else if (explorerDX == 0 && explorerDY == -1) { // facing north
             if(explorerY != 0){
-                explorerY = explorerY - 1;
-                return true;
-            } else {
-                return false;
+                if(world[explorerY][explorerX] == 'o') {
+                    explorerY = explorerY - 1;
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
 
