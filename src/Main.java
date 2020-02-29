@@ -6,5 +6,6 @@ public class Main {
         double obs = .1;
         double wumpus = .1;
         World w = new World(size, pit, obs, wumpus);
+        Solve s = new Solve(w.getWorld(), w.getWumpusCount());
     }
 }

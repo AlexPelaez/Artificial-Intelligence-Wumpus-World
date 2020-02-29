@@ -30,10 +30,17 @@ public class World {
         agent = a
      */
     private void populateWorld() {
-        world = new char[size][size];
+        world = new char[size+2][size+2];
         boolean set = false;
-        for(int i = 0; i < size; i++) {
-            for(int j = 0; j < size; j++) {
+        for(int i = 0; i < size+2; i++) {
+            world[0][i] = 'o';
+            world[world.length-1][i] = 'o';
+        }
+
+        for(int i = 1; i < size+1; i++) {
+            world[i][0] = 'o';
+            world[i][world.length-1] = 'o';
+            for(int j = 1; j < size+1; j++) {
                 set = false;
                 while(!set){
                     boolean isPit = calculatePitProbability();
@@ -102,12 +109,20 @@ public class World {
     }
 
     private void printWorld() {
-        for(int i = 0; i < size; i++) {
+        for(int i = 0; i < size+2; i++) {
             System.out.print(" ");
-            for(int j = 0; j < size; j++) {
+            for(int j = 0; j < size+2; j++) {
                 System.out.print(world[i][j] + " ");
             }
             System.out.println("");
         }
+    }
+
+    public char[][] getWorld() {
+        return world;
+    }
+
+    public int getWumpusCount() {
+        return wumpusCount;
     }
 }
