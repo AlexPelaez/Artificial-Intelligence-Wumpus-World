@@ -3,6 +3,7 @@
  */
 
 public class Solve {
+    private static final int DEATH_COST = 10000;
     private char[][] world;
     private boolean[][][] knowledgeBase;
     private int[] startLocation;
@@ -11,6 +12,8 @@ public class Solve {
     private int explorerX;
     private int explorerDY = 1;
     private int explorerDX = 0;
+    private int cost = 0;
+    private boolean reachedGold = false;
 
 
     public Solve(char[][] world, int wumpusCount) {
@@ -24,12 +27,9 @@ public class Solve {
     }
 
     private int solveUnification() {
-        boolean reachedGold = false;
-        int cost = 0;
+
         int remainingWumpusCount = wumpusCount;
         int arrowCount = remainingWumpusCount;
-
-
 
         // sensor list: breeze, stench, bump, scream, gold
         boolean[] sensorList;
@@ -37,17 +37,24 @@ public class Solve {
         while(!reachedGold) {
             cost--;
             sensorList = sense(action);
-            action = updateKnowledgeBase(sensorList);
+            updateKnowledgeBase(sensorList);
             if(action == 0) {
 
             } else if(action == 1){
-
+                goForward();
             } else if(action == 2){
-
+                turnLeft();
             } else if(action == 3){
-
+                turnRight();
             } else if(action == 4){
+                shootArrow();
+            } else if(action == 5){
+                pickUpGold();
+            }
 
+            if(world[explorerY][explorerX] == 'w' || world[explorerY][explorerX] == 'p') {
+                cost = cost - DEATH_COST;
+                break;
             }
         }
 
@@ -224,14 +231,53 @@ public class Solve {
         return true;
     }
 
-    private boolean shootArrow(int x, int y) {
-        if(world[y][x] == 'w') {
-            wumpusCount--;
+    private boolean pickUpGold() {
+        if(world[explorerY][explorerX] == 'g'){
+            reachedGold = true;
+            cost += 1000;
             return true;
-        } else {
-            return false;
         }
 
+        return false;
+    }
+
+    private boolean shootArrow() {
+        if(explorerDX == 1 && explorerDY == 0) { // facing east
+            for(int i = explorerX; i < world.length; i++){
+                if(world[explorerY][i] == 'w'){
+                    return true;
+                } else if (world[explorerY][i] == 'o'){
+                    return false;
+                }
+            }
+
+        } else if (explorerDX == -1 && explorerDY == 0) { // facing west
+            for(int i = explorerX; i > 0; i--){
+                if(world[explorerY][i] == 'w'){
+                    return true;
+                } else if (world[explorerY][i] == 'o'){
+                    return false;
+                }
+            }
+        } else if (explorerDX == 0 && explorerDY == 1) { // facing south
+            for(int i = explorerY; i < world.length; i++){
+                if(world[i][explorerX] == 'w'){
+                    return true;
+                } else if (world[i][explorerX] == 'o'){
+                    return false;
+                }
+            }
+
+        } else if (explorerDX == 0 && explorerDY == -1) { // facing north
+            for(int i = explorerY; i < 0; i--){
+                if(world[i][explorerX] == 'w'){
+                    return true;
+                } else if (world[i][explorerX] == 'o'){
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     private int[] getStartLocation() {
