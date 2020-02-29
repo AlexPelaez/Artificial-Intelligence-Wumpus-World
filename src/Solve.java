@@ -19,7 +19,7 @@ public class Solve {
         this.startLocation = getStartLocation();
         explorerY = startLocation[0];
         explorerX = startLocation[1];
-        this.knowledgeBase = new boolean[world.length][world.length][7];
+        this.knowledgeBase = new boolean[world.length][world.length][8];
         solveUnification();
     }
 
@@ -57,20 +57,34 @@ public class Solve {
 
 
     private int updateKnowledgeBase(boolean[] sensorList){
-        boolean[] input = new boolean[7];
-        // KnowledgeBase: pit, breeze, wumpus, stench, visited, gold, safe
-        if(!sensorList[0]) {
+        boolean[] input = new boolean[8];
+        // KnowledgeBase: pit, breeze, wumpus, stench, visited, gold, safe, obstacle
+        if(sensorList[0]) {
+            knowledgeBase[explorerX + 1][explorerY][0] = true;
+            knowledgeBase[explorerX][explorerY + 1][0] = true;
+            knowledgeBase[explorerX - 1][explorerY][0] = true;
+            knowledgeBase[explorerX][explorerY - 1][0] = true;
 
-        } if(!sensorList[1]) {
+        }
+        if(!sensorList[1]) {
+            knowledgeBase[explorerX + 1][explorerY][2] = true;
+            knowledgeBase[explorerX][explorerY + 1][2] = true;
+            knowledgeBase[explorerX - 1][explorerY][2] = true;
+            knowledgeBase[explorerX][explorerY - 1][2] = true;
+        }
+        if(sensorList[2]) {
 
-        } if(!sensorList[2]) {
 
-        } if(!sensorList[3]) {
 
-        } if(!sensorList[4]) {
+        }
+        if(!sensorList[3]) {
+
+        }
+        if(!sensorList[4]) {
 
         }
         knowledgeBase[explorerY][explorerX] = input;
+
         return 1;
     }
     private boolean[] sense(int lastAction) {
