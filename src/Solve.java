@@ -11,6 +11,8 @@ public class Solve {
     private int explorerX;
     private int explorerDY = 1;
     private int explorerDX = 0;
+    private int remainingWumpusCount = wumpusCount;
+    private int arrowCount = remainingWumpusCount;
 
 
     public Solve(char[][] world, int wumpusCount) {
@@ -26,8 +28,6 @@ public class Solve {
     private int solveUnification() {
         boolean reachedGold = false;
         int cost = 0;
-        int remainingWumpusCount = wumpusCount;
-        int arrowCount = remainingWumpusCount;
 
 
 
@@ -56,36 +56,83 @@ public class Solve {
 
 
 
-    private int updateKnowledgeBase(boolean[] sensorList){
+    private void updateKnowledgeBase(boolean[] sensorList){
         boolean[] input = new boolean[8];
         // KnowledgeBase: pit, breeze, wumpus, stench, visited, gold, safe, obstacle
         if(sensorList[0]) {
-            knowledgeBase[explorerX + 1][explorerY][0] = true;
-            knowledgeBase[explorerX][explorerY + 1][0] = true;
-            knowledgeBase[explorerX - 1][explorerY][0] = true;
-            knowledgeBase[explorerX][explorerY - 1][0] = true;
+
+            knowledgeBase[explorerY][explorerX + 1][0] = true;
+            knowledgeBase[explorerY + 1][explorerX][0] = true;
+            knowledgeBase[explorerY][explorerX - 1][0] = true;
+            knowledgeBase[explorerY - 1][explorerX][0] = true;
+
+        }
+        if(sensorList[1]) {
+
+            knowledgeBase[explorerY][explorerX + 1][2] = true;
+            knowledgeBase[explorerY + 1][explorerX][2] = true;
+            knowledgeBase[explorerY][explorerX - 1][2] = true;
+            knowledgeBase[explorerY - 1][explorerX][2] = true;
+        }
+        if(sensorList[2]) {
+            if(explorerDX == 1 && explorerDY == 0) { // facing east
+                knowledgeBase[explorerX + 1][explorerY][7] = true;
+                knowledgeBase[explorerX + 1][explorerY][6] = false;
+                knowledgeBase[explorerX + 1][explorerY][0] = false;
+                knowledgeBase[explorerX + 1][explorerY][2] = false;
+
+            } else if (explorerDX == -1 && explorerDY == 0) { // facing west
+                knowledgeBase[explorerY][explorerX - 1][7] = true;
+                knowledgeBase[explorerY][explorerX - 1][6] = false;
+                knowledgeBase[explorerY][explorerX - 1][0] = false;
+                knowledgeBase[explorerY][explorerX - 1][2] = false;
+
+            } else if (explorerDX == 0 && explorerDY == 1) { // facing south
+                knowledgeBase[explorerY + 1][explorerX][7] = true;
+                knowledgeBase[explorerY + 1][explorerX][6] = false;
+                knowledgeBase[explorerY + 1][explorerX][0] = false;
+                knowledgeBase[explorerY + 1][explorerX][2] = false;
+
+            } else if (explorerDX == 0 && explorerDY == -1) { // facing north
+                knowledgeBase[explorerY - 1][explorerX][7] = true;
+                knowledgeBase[explorerY - 1][explorerX][6] = false;
+                knowledgeBase[explorerY - 1][explorerX][0] = false;
+                knowledgeBase[explorerY - 1][explorerX][2] = false;
+            }
+        }
+        if(sensorList[3]) {
+            if(remainingWumpusCount == 0){
+                for(int i = 0; i < world.length; i++) {
+                    for(int j = 0; j < world.length; j++) {
+                            knowledgeBase[i][j][2] = false;
+                    }
+                }
+
+            }
+        }
+        if(sensorList[4]) {
+            knowledgeBase[explorerY][explorerX][5]  = true;
+        }
+        if(!sensorList[0]) {
+            knowledgeBase[explorerY][explorerX + 1][0] = false;
+            knowledgeBase[explorerY + 1][explorerX][0] = false;
+            knowledgeBase[explorerY][explorerX - 1][0] = false;
+            knowledgeBase[explorerY - 1][explorerX][0] = false;
 
         }
         if(!sensorList[1]) {
-            knowledgeBase[explorerX + 1][explorerY][2] = true;
-            knowledgeBase[explorerX][explorerY + 1][2] = true;
-            knowledgeBase[explorerX - 1][explorerY][2] = true;
-            knowledgeBase[explorerX][explorerY - 1][2] = true;
+            knowledgeBase[explorerY][explorerX + 1][2] = false;
+            knowledgeBase[explorerY + 1][explorerX][2] = false;
+            knowledgeBase[explorerY][explorerX - 1][2] = false;
+            knowledgeBase[explorerY - 1][explorerX][2] = false;
         }
-        if(sensorList[2]) {
-
-
-
+        if(!sensorList[0] && !sensorList[1]){
+            knowledgeBase[explorerY][explorerX + 1][6] = true;
+            knowledgeBase[explorerY + 1][explorerX][6] = true;
+            knowledgeBase[explorerY][explorerX - 1][6] = true;
+            knowledgeBase[explorerY - 1][explorerX][6] = true;
         }
-        if(!sensorList[3]) {
 
-        }
-        if(!sensorList[4]) {
-
-        }
-        knowledgeBase[explorerY][explorerX] = input;
-
-        return 1;
     }
     private boolean[] sense(int lastAction) {
         // sensor list: breeze, stench, bump, scream, gold
