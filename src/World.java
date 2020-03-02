@@ -15,7 +15,7 @@ public class World {
         this.wumpus = w;
 
         populateWorld();
-        printWorld();
+//        printWorld();
     }
 
     /*
