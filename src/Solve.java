@@ -13,35 +13,6 @@ public class Solve {
     private int explorerX;
     private int explorerDY = 1;
     private int explorerDX = 0;
-
-    public int getCellsExploredReactive() {
-        return cellsExploredReactive;
-    }
-
-    public int getGoldFoundReactive() {
-        return goldFoundReactive;
-    }
-
-    public int getWumpusFoundReactive() {
-        return wumpusFoundReactive;
-    }
-
-    public int getWumpusKilledReactive() {
-        return wumpusKilledReactive;
-    }
-
-    public int getExplorerReactiveSuicide() {
-        return explorerReactiveSuicide;
-    }
-
-    public int getPitFoundReactive() {
-        return pitFoundReactive;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
     private int cellsExploredReactive;
     private int goldFoundReactive;
     private int wumpusFoundReactive;
@@ -52,8 +23,8 @@ public class Solve {
     char [][]world1;
     private boolean reachedGold = false;
 
-    private int remainingWumpusCount = wumpusCount;
-    private int arrowCount = remainingWumpusCount;
+    private int remainingWumpusCount;
+    private int arrowCount;
 
 
 
@@ -61,6 +32,8 @@ public class Solve {
         this.world = world;
         this.wumpusCount = wumpusCount;
         this.startLocation = getStartLocation();
+        arrowCount = wumpusCount;
+        remainingWumpusCount = wumpusCount;
         explorerY = startLocation[0];
         explorerX = startLocation[1];
         this.knowledgeBase = new boolean[world.length][world.length][8];
@@ -96,7 +69,7 @@ public class Solve {
             }
             else if(world[explorerY][explorerX] == 'w'){
                 wumpusFoundReactive++;
-//                System.out.println("Death by wumpus");
+                System.out.println("Death by wumpus");
                 return cost - 10000;
             }
             else if(cost == 100000000){
@@ -130,12 +103,17 @@ public class Solve {
             }
 
             if(smelledStench == true && arrowCount !=  0){
+                System.out.println("arrow Shot");
+                System.out.println("DX: " + explorerDX);
+                System.out.println("DY: " + explorerDY);
                 if(shootArrow()){
-                    System.out.println("arrow Shot");
+                    System.out.println("Wumpus Killed");
+
                     wumpusKilledReactive++;
                 }
                 arrowCount--;
                 cost -= 10;
+                smelledStench = false;
                 goForward();
                 world1[explorerY][explorerX] = 'v';
                 cost--;
@@ -548,6 +526,33 @@ public class Solve {
             }
             System.out.println("");
         }
+    }
+    public int getCellsExploredReactive() {
+        return cellsExploredReactive;
+    }
+
+    public int getGoldFoundReactive() {
+        return goldFoundReactive;
+    }
+
+    public int getWumpusFoundReactive() {
+        return wumpusFoundReactive;
+    }
+
+    public int getWumpusKilledReactive() {
+        return wumpusKilledReactive;
+    }
+
+    public int getExplorerReactiveSuicide() {
+        return explorerReactiveSuicide;
+    }
+
+    public int getPitFoundReactive() {
+        return pitFoundReactive;
+    }
+
+    public int getCost() {
+        return cost;
     }
 
 }
