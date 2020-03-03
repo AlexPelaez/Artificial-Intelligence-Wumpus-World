@@ -49,7 +49,7 @@ public class Solve {
         explorerY = startLocation[0];
         explorerX = startLocation[1];
         this.knowledgeBase = new boolean[world.length][world.length][11];
-        solveRecative();
+//        solveRecative();
 
         this.world = world;
         this.wumpusCount = wumpusCount;
@@ -58,7 +58,7 @@ public class Solve {
         remainingWumpusCount = wumpusCount;
         explorerY = startLocation[0];
         explorerX = startLocation[1];
-//        solveKB();
+        solveKB();
 //        solveKnowdledgeBased();
     }
 
@@ -412,13 +412,13 @@ public class Solve {
             for (int j = 1; j < knowledgeBase.length - 1; j++) {
 
 
-                if (knowledgeBase[i][j][0] == false) { //as long as we have visited a location
-                    if (knowledgeBase[i][j][1]) { //makes places next to factSafe just safe becuase we would have sensed a breeze or stench there
+                if (!isUnknown(i,j)) { //as long as we have visited a location
+                    if (isFactSafe(i,j)) { //makes places next to factSafe just safe becuase we would have sensed a breeze or stench there
                         makeSafe(i, j - 1);
                         makeSafe(i, j + 1);
                         makeSafe(i - 1, j);
                         makeSafe(i + 1, j);
-                    } else if (knowledgeBase[i][j][9] && knowledgeBase[i][j][8]){ //we sensed a stench and a breeze
+                    } else if (isStench(i,j) && isBreeze(i,j)){ //we sensed a stench and a breeze
                         makePit(i, j - 1); //make pit on cell below
                         makePossibleWumpus(i, j - 1); //make wumpus on cell below
                         makePit(i, j + 1);//make pit on cell above
@@ -427,33 +427,63 @@ public class Solve {
                         makePossibleWumpus(i - 1, j); // make wumpus on left cell
                         makePit(i + 1, j); // make pit on right cell
                         makePossibleWumpus(i + 1, j); //make wumpus on right cell
-                    } else if (knowledgeBase[i][j][9]){ //we sensed a stench
+                    } else if (isStench(i,j)){ //we sensed a stench
                         makePossibleWumpus(i, j - 1); // make wumpus on cell below
                         makePossibleWumpus(i, j + 1); // make wumpus on cell above
                         makePossibleWumpus(i - 1, j); //make wumpus on cell left
                         makePossibleWumpus(i + 1, j); //make wumpus on cell right
-                    } else if (knowledgeBase[i][j][8]){ //we sensed a breeze
+                    } else if (isBreeze(i,j)){ //we sensed a breeze
                         makePit(i, j - 1); // make pit on cell below
                         makePit(i, j + 1); // make pit on cell above
                         makePit(i - 1, j); // make pit on left cell
                         makePit(i + 1, j); // make pit on right cell
 
-                    } else if (knowledgeBase[i][j][6]){ // See if a pit is a guarenteed pit
+                    } else if (isPit(i,j)){ // See if a pit is a guarenteed pit
                         //first check if any of the spots around it are guarenteed safe
                         if (isFactSafe(i, j - 1) || isFactSafe(i, j + 1) || isFactSafe(i - 1, j) || isFactSafe(i + 1, j)) {
                            makeSafe(i, j);
                            //next check if we have visited it
-                        } else if (!isUnknown(i, j - 1) || !isUnknown(i, j + 1) || !isUnknown(i - 1, j) || !isUnknown(i + 1, j)) {
-                            makeFactPit(i, j);
+                        } else {
+                            int c = 0;
+                            if (isBreeze(i, j - 1)){
+                                c++;
+                            }
+                            if (isBreeze(i, j + 1)){
+                                c++;
+                            }
+                            if (isBreeze(i - 1, j)){
+                                c++;
+                            }
+                            if (isBreeze(i + 1, j)){
+                                c++;
+                            }
+                            if(c>1){
+                                makeFactPit(i, j);
+                            }
                         }
 
-                    } else if (knowledgeBase[i][j][4]){ //see  if a wumpus is a guarenteed wumpus
+                    } else if (isWumpus(i,j)){ //see  if a wumpus is a guarenteed wumpus
                         //first check if any of the spots around it are guarenteed safe
                         if (isFactSafe(i, j - 1) || isFactSafe(i, j + 1) || isFactSafe(i - 1, j) || isFactSafe(i + 1, j)) {
                             makeSafe(i, j);
                             //next check if we have visited it
-                        } else if (!isUnknown(i, j - 1) || !isUnknown(i, j + 1) || !isUnknown(i - 1, j) || !isUnknown(i + 1, j)) {
-                            makeFactWumpus(i, j);
+                        } else {
+                            int c = 0;
+                            if (isStench(i, j - 1)){
+                                c++;
+                            }
+                            if (isStench(i, j + 1)){
+                                c++;
+                            }
+                            if (isStench(i - 1, j)){
+                                c++;
+                            }
+                            if (isStench(i + 1, j)){
+                                c++;
+                            }
+                            if(c>1){
+                                makeFactWumpus(i, j);
+                            }
                         }
                     }
                 }

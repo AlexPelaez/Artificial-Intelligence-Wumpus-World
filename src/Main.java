@@ -2,9 +2,9 @@ public class Main {
 
     public static void main(String[] args) {
         int size = 20;
-        double pit = 0;
-        double obs = .9;
-        double wumpus = 0;
+        double pit = .1;
+        double obs = .1;
+        double wumpus = .1;
         int cellsExploredReactive = 0;
         int goldFoundReactive = 0;
         int wumpusFoundReactive = 0;
@@ -19,7 +19,7 @@ public class Main {
         int wumpusKilledKB = 0;
         int explorerKBSuicide = 0;
         int pitFoundKB = 0;
-        int numberOfWorlds = 10;
+        int numberOfWorlds = 1;
 
 
         double avgCost = 0;
@@ -32,50 +32,50 @@ public class Main {
         World[] worlds = new World[numberOfWorlds];
         Solve[] solves = new Solve[numberOfWorlds];
 
-//        for( int i = 0; i < numberOfWorlds; i ++){
-//            worlds[i] = new World(size, pit, obs, wumpus);
-//            solves[i] = new Solve(worlds[i].getWorld(), worlds[i].getWumpusCount());
-//            wumpusFoundKB += solves[i].getWumpusFoundKB();
-//            cellsExploredKB += solves[i].getCellsExploredKB();
-//            goldFoundKB += solves[i].getGoldFoundKB();
-//            wumpusKilledKB += solves[i].getWumpusKilledKB();
-//            explorerKBSuicide += solves[i].getExplorerKBSuicide();
-//            pitFoundKB += solves[i].getPitFoundKB();
-//            explorerKBSuicide += solves[i].getExplorerKBSuicide();
-//            System.out.println(avgCost);
-//            avgCost += (double)(solves[i].getCostKB());
-//        }
-//        avgCost = avgCost / (double)(numberOfWorlds);
-//        avgCells = cellsExploredKB /numberOfWorlds;
-//        System.out.println("Wumpus' Found: " + wumpusFoundKB);
-//        System.out.println("Gold Found: " + goldFoundKB);
-//        System.out.println("Avg Cells Explored: " + avgCells);
-//        System.out.println("Avg Cost: " + avgCost);
-//        System.out.println("Explorer Killed Wumpus: " + wumpusKilledKB);
-//        System.out.println("Died To Pit: " + pitFoundKB);
-//        System.out.println("Died To suicide: " + explorerKBSuicide);
-
-
         for( int i = 0; i < numberOfWorlds; i ++){
             worlds[i] = new World(size, pit, obs, wumpus);
             solves[i] = new Solve(worlds[i].getWorld(), worlds[i].getWumpusCount());
-            wumpusFoundReactive += solves[i].getWumpusFoundReactive();
-            cellsExploredReactive += solves[i].getCellsExploredReactive();
-            goldFoundReactive += solves[i].getGoldFoundReactive();
-            wumpusKilledReactive += solves[i].getWumpusKilledReactive();
-            explorerReactiveSuicide += solves[i].getExplorerReactiveSuicide();
-            pitFoundReactive += solves[i].getPitFoundReactive();
+            wumpusFoundKB += solves[i].getWumpusFoundKB();
+            cellsExploredKB += solves[i].getCellsExploredKB();
+            goldFoundKB += solves[i].getGoldFoundKB();
+            wumpusKilledKB += solves[i].getWumpusKilledKB();
+            explorerKBSuicide += solves[i].getExplorerKBSuicide();
+            pitFoundKB += solves[i].getPitFoundKB();
+            explorerKBSuicide += solves[i].getExplorerKBSuicide();
             System.out.println(avgCost);
             avgCost += (double)(solves[i].getCostKB());
         }
         avgCost = avgCost / (double)(numberOfWorlds);
-        avgCells = cellsExploredReactive /numberOfWorlds;
-        System.out.println("Wumpus' Found: " + wumpusFoundReactive);
-        System.out.println("Gold Found: " + goldFoundReactive);
+        avgCells = cellsExploredKB /numberOfWorlds;
+        System.out.println("Wumpus' Found: " + wumpusFoundKB);
+        System.out.println("Gold Found: " + goldFoundKB);
         System.out.println("Avg Cells Explored: " + avgCells);
         System.out.println("Avg Cost: " + avgCost);
-        System.out.println("Explorer Killed Wumpus: " + wumpusKilledReactive);
-        System.out.println("Died To Pit: " + pitFoundReactive);
+        System.out.println("Explorer Killed Wumpus: " + wumpusKilledKB);
+        System.out.println("Died To Pit: " + pitFoundKB);
+        System.out.println("Died To suicide: " + explorerKBSuicide);
+
+
+//        for( int i = 0; i < numberOfWorlds; i ++){
+//            worlds[i] = new World(size, pit, obs, wumpus);
+//            solves[i] = new Solve(worlds[i].getWorld(), worlds[i].getWumpusCount());
+//            wumpusFoundReactive += solves[i].getWumpusFoundReactive();
+//            cellsExploredReactive += solves[i].getCellsExploredReactive();
+//            goldFoundReactive += solves[i].getGoldFoundReactive();
+//            wumpusKilledReactive += solves[i].getWumpusKilledReactive();
+//            explorerReactiveSuicide += solves[i].getExplorerReactiveSuicide();
+//            pitFoundReactive += solves[i].getPitFoundReactive();
+//            System.out.println(avgCost);
+//            avgCost += (double)(solves[i].getCost());
+//        }
+//        avgCost = avgCost / (double)(numberOfWorlds);
+//        avgCells = cellsExploredReactive /numberOfWorlds;
+//        System.out.println("Wumpus' Found: " + wumpusFoundReactive);
+//        System.out.println("Gold Found: " + goldFoundReactive);
+//        System.out.println("Avg Cells Explored: " + avgCells);
+//        System.out.println("Avg Cost: " + avgCost);
+//        System.out.println("Explorer Killed Wumpus: " + wumpusKilledReactive);
+//        System.out.println("Died To Pit: " + pitFoundReactive);
 
     }
 }
