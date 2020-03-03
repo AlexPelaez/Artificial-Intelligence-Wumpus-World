@@ -24,6 +24,9 @@ public class Solve {
     private int goldFoundKB;
     private int wumpusFoundKB;
     private int wumpusKilledKB;
+
+
+
     private int explorerKBSuicide;
     private int pitFoundKB;
 
@@ -46,7 +49,7 @@ public class Solve {
         explorerY = startLocation[0];
         explorerX = startLocation[1];
         this.knowledgeBase = new boolean[world.length][world.length][11];
-//        solveRecative();
+        solveRecative();
 
         this.world = world;
         this.wumpusCount = wumpusCount;
@@ -55,7 +58,7 @@ public class Solve {
         remainingWumpusCount = wumpusCount;
         explorerY = startLocation[0];
         explorerX = startLocation[1];
-        solveKB();
+//        solveKB();
 //        solveKnowdledgeBased();
     }
 
@@ -76,7 +79,7 @@ public class Solve {
             costKB--;
 
             if(world[explorerY][explorerX] == 'g'){
-                goldFoundReactive++;
+                goldFoundKB++;
                 System.out.println("Gold found");
                 reachedGold = true;
                 costKB = costKB + 1000;
@@ -84,7 +87,7 @@ public class Solve {
 
             }
             else if(world[explorerY][explorerX] == 'p'){
-                pitFoundReactive++;
+                pitFoundKB++;
                 System.out.println("Death by pit");
                 reachedGold = true;
                 costKB = costKB - 10000;
@@ -92,14 +95,15 @@ public class Solve {
 
             }
             else if(world[explorerY][explorerX] == 'w'){
-                wumpusFoundReactive++;
-                System.out.println("Death by wumpus");
+                wumpusFoundKB++;
+//                System.out.println("Death by wumpus");
                 costKB =costKB - 10000;
                 return costKB;
             }
-            else if(costKB == -100000000){
+            else if(costKB <= -100000000){
 //                System.out.println("Death by suicide");
-                explorerReactiveSuicide++;
+                printWorld();
+                explorerKBSuicide++;
                 costKB =costKB - 10000;
                 return costKB;
 
@@ -109,10 +113,10 @@ public class Solve {
                 updateKnowledgeBase(sensorList);
                 unification();
                 world[explorerY][explorerX] = 'v';
-                printWorld();
-                System.out.println();
-                System.out.println("X: " + explorerX);
-                System.out.println("Y: " + explorerY);
+//                printWorld();
+//                System.out.println();
+//                System.out.println("X: " + explorerX);
+//                System.out.println("Y: " + explorerY);
 
 
                 if(world[explorerY][explorerX + 1] == 'w') {
@@ -132,11 +136,11 @@ public class Solve {
             }
 
             if(smelledStench == true && arrowCount !=  0){
-                System.out.println("arrow Shot");
-                System.out.println("DX: " + explorerDX);
-                System.out.println("DY: " + explorerDY);
+//                System.out.println("arrow Shot");
+//                System.out.println("DX: " + explorerDX);
+//                System.out.println("DY: " + explorerDY);
                 if(shootArrow()){
-                    System.out.println("Wumpus Killed");
+//                    System.out.println("Wumpus Killed");
                     wumpusKilledKB++;
 
                 }
@@ -154,6 +158,7 @@ public class Solve {
                 if(explorerDX == 1 && explorerDY == 0) { // facing east
                     if(!topCell && !bottomCell && !rightCell){
                         move = (int) (Math.random() * 4);
+
                     }
                     else if(topCell){
                         move = 0;
@@ -168,10 +173,10 @@ public class Solve {
 
                     }
 
-
                 } else if (explorerDX == -1 && explorerDY == 0) { // facing west
                     if(!topCell && !bottomCell && !leftCell){
                         move = (int) (Math.random() * 4);
+
                     }
                     else if(bottomCell){
                         move = 2;
@@ -190,6 +195,7 @@ public class Solve {
                 } else if (explorerDX == 0 && explorerDY == 1) { // facing south
                     if(!rightCell && !bottomCell && !leftCell){
                         move = (int) (Math.random() * 4);
+
                     }
                     else if(rightCell){
                         move = 1;
@@ -208,6 +214,7 @@ public class Solve {
                 } else if (explorerDX == 0 && explorerDY == -1) { // facing north
                     if(!topCell && !rightCell && !leftCell){
                         move = (int) (Math.random() * 4);
+
                     }
                     else if(leftCell){
                         move = 3;
@@ -231,7 +238,7 @@ public class Solve {
 
 
                     if (move == 0) {
-                            System.out.println("move North");
+//                            System.out.println("move North");
                             if (explorerDX == 1 && explorerDY == 0) { // facing east
 
                                 turnLeft();
@@ -249,11 +256,11 @@ public class Solve {
                             }
                             if(!goForward())
                             {
-                                turnLeft();
+                                turnRight();
                                 costKB--;
                             }
                     } else if (move == 1) {
-                            System.out.println("move East");
+//                            System.out.println("move East");
                             if (explorerDX == -1 && explorerDY == 0) { // facing west
                                 turnLeft();
                                 costKB--;
@@ -274,7 +281,7 @@ public class Solve {
                                 costKB--;
                             }
                     } else if (move == 2) {
-                            System.out.println("move south");
+//                            System.out.println("move south");
                             if (explorerDX == 1 && explorerDY == 0) { // facing east
                                 turnRight();
                                 costKB--;
@@ -293,7 +300,7 @@ public class Solve {
                                 costKB--;
                             }
                     } else if (move == 3) {
-                            System.out.println("move West");
+//                            System.out.println("move West");
                             if (explorerDX == 1 && explorerDY == 0) { // facing east
                                 turnLeft();
                                 costKB--;
@@ -403,7 +410,6 @@ public class Solve {
 
     private void unification(){
         // KnowledgeBase: unknown 0 , factSafe 1 , safe 2, factWumpus 3, wumpus 4, factPit 5, pit 6, obstacle 7, breeze 8, stench 9, glitter 10
-        //KnowledgeBAse: unknown 0, pit 1, breeze 2, wumpus 3, stench 4,  gold 5, safe 6, obstacle 7, wumpusFact 8 , pitFact 9 , safeFact 10
 
         for(int i = 1; i < knowledgeBase.length - 1; i++) {
             for (int j = 1; j < knowledgeBase.length - 1; j++) {
@@ -664,7 +670,7 @@ public class Solve {
 
     public void makePossibleWumpus(int y, int x){
         try{
-            if(!knowledgeBase[y][x][1] && !knowledgeBase[x][y][2] && !knowledgeBase[x][y][7]){
+            if(!knowledgeBase[y][x][1] && !knowledgeBase[y][x][2] && !knowledgeBase[y][x][7]){
                 knowledgeBase[y][x][0] = false;
                 knowledgeBase[y][x][4] = true;
             }
@@ -682,14 +688,14 @@ public class Solve {
 
     public void makeSafe(int y, int x){
         try{
-            makeFactSafe(x,y);
-            knowledgeBase[x][y][2] = true;
-            knowledgeBase[x][y][1] = false;
+            makeFactSafe(y,x);
+            knowledgeBase[y][x][2] = true;
+            knowledgeBase[y][x][1] = false;
         }catch(IndexOutOfBoundsException e){}
     }
     public boolean isFactSafe(int y, int x){
         try{
-            return knowledgeBase[x][y][1];
+            return knowledgeBase[y][x][1];
         }catch(IndexOutOfBoundsException e){
             return false;
         }
@@ -697,7 +703,7 @@ public class Solve {
 
     public boolean isUnknown(int y, int x){
         try{
-            return knowledgeBase[x][y][0]; //True if unknown
+            return knowledgeBase[y][x][0]; //True if unknown
         }catch(IndexOutOfBoundsException e){
             return false;
         }
@@ -718,39 +724,42 @@ public class Solve {
             cost--;
             if(world[explorerY][explorerX] == 'g'){
                 goldFoundReactive++;
-                System.out.println("Gold found");
+//                System.out.println("Gold found");
                 reachedGold = true;
+                printWorld();
                 cost = cost + 1000;
                 return cost;
 
             }
             else if(world[explorerY][explorerX] == 'p'){
                 pitFoundReactive++;
-                System.out.println("Death by pit");
+//                System.out.println("Death by pit");
                 reachedGold = true;
                 cost = cost - 10000;
+                printWorld();
                 return cost;
 
             }
             else if(world[explorerY][explorerX] == 'w'){
                 wumpusFoundReactive++;
-                System.out.println("Death by wumpus");
+//                System.out.println("Death by wumpus");
                 cost = cost - 10000;
-
+                printWorld();
                 return cost;
             }
-            else if(cost == -100000000){
+            else if(cost <= -100000000){
 //                System.out.println("Death by suicide");
+                printWorld();
                 explorerReactiveSuicide++;
-                cost =cost - 10000;
+                cost = cost - 10000;
                 return cost;
 
             } else{
                 world[explorerY][explorerX] = 'v';
-                printWorld();
-                System.out.println();
-                System.out.println("X: " + explorerX);
-                System.out.println("Y: " + explorerY);
+//                printWorld();
+//                System.out.println();
+//                System.out.println("X: " + explorerX);
+//                System.out.println("Y: " + explorerY);
 
                 if (world[explorerY][explorerX - 1] == 'w') {
                     smelledStench = true;
@@ -771,11 +780,11 @@ public class Solve {
             }
 
             if(smelledStench == true && arrowCount !=  0){
-                System.out.println("arrow Shot");
-                System.out.println("DX: " + explorerDX);
-                System.out.println("DY: " + explorerDY);
+//                System.out.println("arrow Shot");
+//                System.out.println("DX: " + explorerDX);
+//                System.out.println("DY: " + explorerDY);
                 if(shootArrow()){
-                    System.out.println("Wumpus Killed");
+//                    System.out.println("Wumpus Killed");
 
                     wumpusKilledReactive++;
                 }
@@ -794,7 +803,7 @@ public class Solve {
                 int move = (int) (Math.random() * 4);
 
                 if (move == 0) {
-                    System.out.println("move North");
+//                    System.out.println("move North");
                     if (explorerDX == 1 && explorerDY == 0) { // facing east
 
                         turnLeft();
@@ -811,7 +820,7 @@ public class Solve {
                         cost--;
                     }
                 } else if (move == 1) {
-                    System.out.println("move East");
+//                    System.out.println("move East");
                     if (explorerDX == -1 && explorerDY == 0) { // facing west
                         turnLeft();
                         cost--;
@@ -829,7 +838,7 @@ public class Solve {
 
 
                 } else if (move == 2) {
-                    System.out.println("move south");
+//                    System.out.println("move south");
                     if (explorerDX == 1 && explorerDY == 0) { // facing east
                         turnRight();
                         cost--;
@@ -843,7 +852,7 @@ public class Solve {
                         cost--;
                     }
                 } else if (move == 3) {
-                    System.out.println("move West");
+//                    System.out.println("move West");
                     if (explorerDX == 1 && explorerDY == 0) { // facing east
                         turnLeft();
                         cost--;
@@ -925,6 +934,30 @@ public class Solve {
 
     public int getPitFoundReactive() {
         return pitFoundReactive;
+    }
+
+    public int getCellsExploredKB() {
+        return cellsExploredKB;
+    }
+
+    public int getGoldFoundKB() {
+        return goldFoundKB;
+    }
+
+    public int getWumpusFoundKB() {
+        return wumpusFoundKB;
+    }
+
+    public int getWumpusKilledKB() {
+        return wumpusKilledKB;
+    }
+
+    public int getExplorerKBSuicide() {
+        return explorerKBSuicide;
+    }
+
+    public int getPitFoundKB() {
+        return pitFoundKB;
     }
 
     public int getCost() {
