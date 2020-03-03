@@ -517,7 +517,7 @@ public class Solve {
     private int solveRecative(){
         boolean reachedGold = false;
         boolean smelledStench = false;
-//        help
+//        help1
         world1 = world;
         cost = 0;
         while (!reachedGold){
