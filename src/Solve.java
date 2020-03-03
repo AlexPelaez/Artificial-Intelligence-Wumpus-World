@@ -37,7 +37,7 @@ public class Solve {
         explorerY = startLocation[0];
         explorerX = startLocation[1];
         this.knowledgeBase = new boolean[world.length][world.length][8];
-//        solveRecative();
+        solveRecative();
 
         this.world = world;
         this.wumpusCount = wumpusCount;
@@ -47,7 +47,7 @@ public class Solve {
         explorerY = startLocation[0];
         explorerX = startLocation[1];
 
-        solveKnowdledgeBased();
+        //solveKnowdledgeBased();
     }
 
     private int solveKB(){
@@ -530,22 +530,26 @@ public class Solve {
                 goldFoundReactive++;
                 System.out.println("Gold found");
                 reachedGold = true;
-                return cost + 1000;
+                cost = cost + 1000;
+                return cost;
 
             }
             else if(world[explorerY][explorerX] == 'p'){
                 pitFoundReactive++;
                 System.out.println("Death by pit");
                 reachedGold = true;
-                return cost - 10000;
+                cost = cost - 10000;
+                return cost;
 
             }
             else if(world[explorerY][explorerX] == 'w'){
                 wumpusFoundReactive++;
                 System.out.println("Death by wumpus");
-                return cost - 10000;
+                cost = cost - 10000;
+
+                return cost;
             }
-            else if(cost == 100000000){
+            else if(cost == -100000000){
 //                System.out.println("Death by suicide");
                 explorerReactiveSuicide++;
                 return cost;

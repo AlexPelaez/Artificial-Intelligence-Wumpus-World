@@ -31,10 +31,10 @@ public class Main {
             wumpusKilledReactive += solves[i].getWumpusKilledReactive();
             explorerReactiveSuicide += solves[i].getExplorerReactiveSuicide();
             pitFoundReactive += solves[i].getPitFoundReactive();
+            System.out.println(avgCost);
             avgCost += (double)(solves[i].getCost());
         }
         avgCost = avgCost / (double)(numberOfWorlds);
-        //mag
         avgCells = cellsExploredReactive /numberOfWorlds;
         System.out.println("Wumpus' Found: " + wumpusFoundReactive);
         System.out.println("Gold Found: " + goldFoundReactive);
