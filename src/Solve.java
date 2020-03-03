@@ -60,20 +60,21 @@ public class Solve {
     }
 
     private int solveKB(){
+        initKnowledgeBase();
         boolean reachedGold = false;
         boolean smelledStench = false;
-        int action = 1;
+        int move = 0;
         costKB = 0;
+
         while (!reachedGold){
 //            printWorld1();
 //            System.out.println();
 //            System.out.println("X: " + explorerX);
 //            System.out.println("Y: " + explorerY);
-            boolean[] sensorList;
+
 
             costKB--;
-            sensorList = sense(action);
-            updateKnowledgeBase(sensorList);
+
             if(world[explorerY][explorerX] == 'g'){
                 goldFoundReactive++;
                 System.out.println("Gold found");
@@ -103,7 +104,10 @@ public class Solve {
                 return costKB;
 
             } else{
-                sense(1);
+                boolean[] sensorList;
+                sensorList = sense();
+                updateKnowledgeBase(sensorList);
+                unification();
                 world[explorerY][explorerX] = 'v';
                 printWorld();
                 System.out.println();
@@ -111,20 +115,18 @@ public class Solve {
                 System.out.println("Y: " + explorerY);
 
 
-                if (world[explorerY][explorerX - 1] == 'w') {
+                if(world[explorerY][explorerX + 1] == 'w') {
                     smelledStench = true;
                 }
-
-                if(world[explorerY][explorerX+1] == 'w') {
-                    smelledStench = true;
-                }
-
                 if(world[explorerY-1][explorerX] == 'w') {
                     smelledStench = true;
                 }
                 if(world[explorerY+1][explorerX] == 'w') {
                     smelledStench = true;
 
+                }
+                if(world[explorerY ][explorerX - 1] == 'w') {
+                    smelledStench = true;
                 }
 
             }
@@ -135,30 +137,100 @@ public class Solve {
                 System.out.println("DY: " + explorerDY);
                 if(shootArrow()){
                     System.out.println("Wumpus Killed");
+                    wumpusKilledKB++;
 
-                    wumpusKilledReactive++;
                 }
                 arrowCount--;
                 costKB -= 10;
                 smelledStench = false;
                 world[explorerY][explorerX] = 'v';
-                if(!goForward())
-                {
-                    turnLeft();
-                    costKB--;
+            } else {
+
+                boolean topCell = queryKB(explorerY - 1, explorerX); //Top Cell
+                boolean bottomCell = queryKB(explorerY  + 1, explorerX); //Bottom Cell
+                boolean rightCell = queryKB(explorerY, explorerX + 1);//Right Cell
+                boolean leftCell = queryKB(explorerY, explorerX - 1);//Left Cell
+
+                if(explorerDX == 1 && explorerDY == 0) { // facing east
+                    if(!topCell && !bottomCell && !rightCell){
+                        move = (int) (Math.random() * 4);
+                    }
+                    else if(topCell){
+                        move = 0;
+
+                    }
+                    else if(bottomCell){
+                        move = 2;
+
+                    }
+                    else if(rightCell){
+                        move = 1;
+
+                    }
+
+
+                } else if (explorerDX == -1 && explorerDY == 0) { // facing west
+                    if(!topCell && !bottomCell && !leftCell){
+                        move = (int) (Math.random() * 4);
+                    }
+                    else if(bottomCell){
+                        move = 2;
+
+                    }
+                    else if(leftCell){
+                        move = 3;
+
+                    }
+                    else if(topCell){
+                        move = 0;
+
+                    }
+
+
+                } else if (explorerDX == 0 && explorerDY == 1) { // facing south
+                    if(!rightCell && !bottomCell && !leftCell){
+                        move = (int) (Math.random() * 4);
+                    }
+                    else if(rightCell){
+                        move = 1;
+
+                    }
+                    else if(leftCell){
+                        move = 3;
+
+                    }
+                    else if(bottomCell){
+                        move = 2;
+
+                    }
+
+
+                } else if (explorerDX == 0 && explorerDY == -1) { // facing north
+                    if(!topCell && !rightCell && !leftCell){
+                        move = (int) (Math.random() * 4);
+                    }
+                    else if(leftCell){
+                        move = 3;
+
+                    }
+                    else if(topCell){
+                        move = 0;
+
+                    }
+                    else if(rightCell){
+                        move = 1;
+
+                    }
+
                 }
 
-                costKB--;
-            } else {
-                int counter = 0;
-                while(counter !=20) {
-                    counter++;
-                    int move = (int) (Math.random() * 4);
+
+
+
+
 
 
                     if (move == 0) {
-                        if (queryKB(explorerY - 1, explorerX)) {
-                            counter=20;
                             System.out.println("move North");
                             if (explorerDX == 1 && explorerDY == 0) { // facing east
 
@@ -175,12 +247,12 @@ public class Solve {
                                 turnLeft();
                                 costKB--;
                             }
-                            costKB--;
-                            goForward();
-                        }
+                            if(!goForward())
+                            {
+                                turnLeft();
+                                costKB--;
+                            }
                     } else if (move == 1) {
-                        if (queryKB(explorerY, explorerX + 1)) {
-                            counter=20;
                             System.out.println("move East");
                             if (explorerDX == -1 && explorerDY == 0) { // facing west
                                 turnLeft();
@@ -196,13 +268,12 @@ public class Solve {
                                 turnRight();
                                 costKB--;
                             }
-                            costKB--;
-                            goForward();
-
-                        }
+                            if(!goForward())
+                            {
+                                turnLeft();
+                                costKB--;
+                            }
                     } else if (move == 2) {
-                        if (queryKB(explorerY + 1, explorerX)) {
-                            counter=20;
                             System.out.println("move south");
                             if (explorerDX == 1 && explorerDY == 0) { // facing east
                                 turnRight();
@@ -216,12 +287,12 @@ public class Solve {
                                 turnLeft();
                                 costKB--;
                             }
-                            costKB--;
-                            goForward();
-                        }
+                            if(!goForward())
+                            {
+                                turnLeft();
+                                costKB--;
+                            }
                     } else if (move == 3) {
-                        if (queryKB(explorerY, explorerX - 1)) {
-                            counter=20;
                             System.out.println("move West");
                             if (explorerDX == 1 && explorerDY == 0) { // facing east
                                 turnLeft();
@@ -237,165 +308,188 @@ public class Solve {
                                 turnLeft();
                                 costKB--;
                             }
-                            costKB--;
-                            goForward();
-                        }
+                            if(!goForward())
+                            {
+                                turnLeft();
+                                costKB--;
+                            }
                     }
-
-
-
 
                 }
 
             }
-            cellsExploredReactive++;
-        }
+            cellsExploredKB++;
         return costKB;
     }
 
-    private boolean queryKB(int newY, int newX){
+    private boolean queryKB(int newY, int newX) {
         // sensor list: breeze, stench, bump, scream, gold
-        // KnowledgeBase: pit, breeze, wumpus, stench, visited, gold, safe, obstacle, wumpusFact, pitFact, safeFact
-        if(knowledgeBase[newY][newX][10]){
+        // KnowledgeBase: unknown 0 , factSafe 1 , safe 2, factWumpus 3, wumpus 4, factPit 5, pit 6, obstacle 7, breeze 8, stench 9, glitter 10
+        if(knowledgeBase[newY][newX][1]){
             return true;
-        } else if(knowledgeBase[newY][newX][0] || knowledgeBase[newY][newX][2] || knowledgeBase[newY][newX][8] || knowledgeBase[newY][newX][9]){
+        }
+        else if(knowledgeBase[newY][newX][2]){
+            return true;
+        }
+        else if(knowledgeBase[newY][newX][3] || knowledgeBase[newY][newX][5] ){
             return false;
         }
-
-       return true;
+        else if(knowledgeBase[newY][newX][7]){
+            return false;
+        }
+        else if(knowledgeBase[newY][newX][4] || knowledgeBase[newY][newX][6] ){
+            return false;
+        }
+        else{
+            return false;
+        }
     }
 
 
-    private void updateKnowledgeBase(boolean[] sensorList){
-        boolean[] input = new boolean[8];
-        // sensor list: breeze, stench, bump, scream, gold
-        // KnowledgeBase: pit, breeze, wumpus, stench, visited, gold, safe, obstacle, wumpusFact, pitFact, safeFact
-        knowledgeBase[explorerY][explorerX][10] = true;
-        if(!(sensorList[0]||sensorList[1])){
-            knowledgeBase[explorerY][explorerX + 1][10] = true;
-            knowledgeBase[explorerY + 1][explorerX][10] = true;
-            knowledgeBase[explorerY][explorerX - 1][10] = true;
-            knowledgeBase[explorerY - 1][explorerX][10] = true;
+    public void initKnowledgeBase(){
+        for(int i = 0; i < knowledgeBase.length; i++) {
+            for(int j = 0; j < knowledgeBase.length; j++) {
+                knowledgeBase[i][j][0] = true;
+                knowledgeBase[i][j][1] = false;
+                knowledgeBase[i][j][2] = false;
+                knowledgeBase[i][j][3] = false;
+                knowledgeBase[i][j][4] = false;
+                knowledgeBase[i][j][5] = false;
+                knowledgeBase[i][j][6] = false;
+            }
         }
-        if(sensorList[2]){
+    }
+
+
+
+
+    private void updateKnowledgeBase(boolean[] sensorList) {
+        // sensor list: breeze, stench, bump, scream, gold
+        if(sensorList[2]){// Sensed bump
             if(explorerDX == 1 && explorerDY == 0) { // facing east
-                knowledgeBase[explorerY][explorerX+1][7] = true;
-                knowledgeBase[explorerY][explorerX+1][4] = true;
-                knowledgeBase[explorerY][explorerX+1][6] = false;
-                knowledgeBase[explorerY][explorerX+1][0] = false;
-                knowledgeBase[explorerY][explorerX+1][2] = false;
-                knowledgeBase[explorerY][explorerX+1][8] = false;
-                knowledgeBase[explorerY][explorerX+1][9] = false;
-                knowledgeBase[explorerY][explorerX+1][10] = false;
-
-
+                makeObstacle(explorerY,explorerX + 1); //add bump to knowledgeBase
             } else if (explorerDX == -1 && explorerDY == 0) { // facing west
-                knowledgeBase[explorerY][explorerX - 1][7] = true;
-                knowledgeBase[explorerY][explorerX - 1][4] = true;
-                knowledgeBase[explorerY][explorerX - 1][6] = false;
-                knowledgeBase[explorerY][explorerX - 1][0] = false;
-                knowledgeBase[explorerY][explorerX - 1][2] = false;
-                knowledgeBase[explorerY][explorerX - 1][8] = false;
-                knowledgeBase[explorerY][explorerX - 1][9] = false;
-                knowledgeBase[explorerY][explorerX - 1][10] = false;
-
+                makeObstacle(explorerY,explorerX - 1);//add bump to knowledgeBase
             } else if (explorerDX == 0 && explorerDY == 1) { // facing south
-                knowledgeBase[explorerY + 1][explorerX][7] = true;
-                knowledgeBase[explorerY + 1][explorerX][4] = true;
-                knowledgeBase[explorerY + 1][explorerX][6] = false;
-                knowledgeBase[explorerY + 1][explorerX][0] = false;
-                knowledgeBase[explorerY + 1][explorerX][2] = false;
-                knowledgeBase[explorerY + 1][explorerX][8] = false;
-                knowledgeBase[explorerY + 1][explorerX][9] = false;
-                knowledgeBase[explorerY + 1][explorerX][10] = false;
-
-
+                makeObstacle(explorerY + 1,explorerX);//add bump to knowledgeBase
             } else if (explorerDX == 0 && explorerDY == -1) { // facing north
-                knowledgeBase[explorerY - 1][explorerX][7] = true;
-                knowledgeBase[explorerY - 1][explorerX][6] = false;
-                knowledgeBase[explorerY - 1][explorerX][0] = false;
-                knowledgeBase[explorerY - 1][explorerX][2] = false;
-                knowledgeBase[explorerY - 1][explorerX][8] = false;
-                knowledgeBase[explorerY - 1][explorerX][9] = false;
-                knowledgeBase[explorerY - 1][explorerX][10] = false;
-
+                makeObstacle(explorerY - 1,explorerX);//add bump to knowledgeBase
             }
         }
-        if(sensorList[4]){
-            knowledgeBase[explorerY][explorerX][5] = true;
+        else if(sensorList[0] && sensorList[1]){
+            knowledgeBase[explorerY][explorerX][8] = true;
+            knowledgeBase[explorerY][explorerX][9] = true;
+            knowledgeBase[explorerY][explorerX][2] = true;
         }
-        if(sensorList[1]){
-           if(!knowledgeBase[explorerY][explorerX+1][10] && !knowledgeBase[explorerY][explorerX+1][8] && knowledgeBase[explorerY][explorerX+1][7]){
-               knowledgeBase[explorerY][explorerX + 1][2] = true;
-           }
-            if(!knowledgeBase[explorerY+1][explorerX][10] && !knowledgeBase[explorerY+1][explorerX][8] && knowledgeBase[explorerY+1][explorerX][7]){
-                knowledgeBase[explorerY + 1][explorerX][2] = true;
-            }
-            if(!knowledgeBase[explorerY][explorerX-1][10] && !knowledgeBase[explorerY][explorerX-1][8] && knowledgeBase[explorerY][explorerX-1][7]){
-                knowledgeBase[explorerY][explorerX - 1][2] = true;
-            }
-            if(!knowledgeBase[explorerY-1][explorerX][10] && !knowledgeBase[explorerY-1][explorerX][8] && knowledgeBase[explorerY-1][explorerX][7]){
-                knowledgeBase[explorerY - 1][explorerX][2] = true;
-            }
+        else if(sensorList[0]){
+            knowledgeBase[explorerY][explorerX][8] = true;
+            knowledgeBase[explorerY][explorerX][2] = true;
+        }
+        else if(sensorList[1]){
+            knowledgeBase[explorerY][explorerX][9] = true;
+            knowledgeBase[explorerY][explorerX][2] = true;
+        }
+        else{
+            makeFactSafe(explorerY,explorerX);
         }
 
-        if(sensorList[0]){
-            if(!knowledgeBase[explorerY][explorerX+1][10] && !knowledgeBase[explorerY][explorerX+1][9] && knowledgeBase[explorerY][explorerX+1][7]){
-                knowledgeBase[explorerY][explorerX + 1][0] = true;
-            }
-            if(!knowledgeBase[explorerY+1][explorerX][10] && !knowledgeBase[explorerY+1][explorerX][9] && knowledgeBase[explorerY+1][explorerX][7]){
-                knowledgeBase[explorerY + 1][explorerX][0] = true;
-            }
-            if(!knowledgeBase[explorerY][explorerX-1][10] && !knowledgeBase[explorerY][explorerX-1][9] && knowledgeBase[explorerY][explorerX-1][7]){
-                knowledgeBase[explorerY][explorerX - 1][0] = true;
-            }
-            if(!knowledgeBase[explorerY-1][explorerX][10] && !knowledgeBase[explorerY-1][explorerX][9] && knowledgeBase[explorerY-1][explorerX][7]){
-                knowledgeBase[explorerY - 1][explorerX][0] = true;
-            }
+        if (sensorList[4]) {
+            knowledgeBase[explorerY][explorerX][10] = true;
+        }
+        if(sensorList[3]){
+
         }
     }
-    private boolean[] sense(int lastAction) {
-        // sensor list: breeze, stench, bump, scream, gold
-        boolean[] sensorList = new boolean[5];
 
-        // breeze and stench
-        if(world[explorerY][explorerX-1] == 'p') {
-            sensorList[0] = true;
-        } else if(world[explorerY][explorerX-1] == 'w') {
-            sensorList[1] = true;
+    private void unification(){
+        // KnowledgeBase: unknown 0 , factSafe 1 , safe 2, factWumpus 3, wumpus 4, factPit 5, pit 6, obstacle 7, breeze 8, stench 9, glitter 10
+        //KnowledgeBAse: unknown 0, pit 1, breeze 2, wumpus 3, stench 4,  gold 5, safe 6, obstacle 7, wumpusFact 8 , pitFact 9 , safeFact 10
+
+        for(int i = 1; i < knowledgeBase.length - 1; i++) {
+            for (int j = 1; j < knowledgeBase.length - 1; j++) {
+
+
+                if (knowledgeBase[i][j][0] == false) {
+                    if (knowledgeBase[i][j][1]) { //makes places next to factSafe just safe
+                        makeSafe(i, j - 1);
+                        makeSafe(i, j + 1);
+                        makeSafe(i - 1, j);
+                        makeSafe(i + 1, j);
+                    } else if (knowledgeBase[i][j][8] && knowledgeBase[i][j][9]){
+                        makePit(i, j - 1);
+                        makePossibleWumpus(i, j - 1);
+                        makePit(i, j + 1);
+                        makePossibleWumpus(i, j + 1);
+                        makePit(i - 1, j);
+                        makePossibleWumpus(i - 1, j);
+                        makePit(i + 1, j);
+                        makePossibleWumpus(i + 1, j);
+                    } else if (knowledgeBase[i][j][8]){ //Marks possible pit
+                        makePit(i, j - 1);
+                        makePit(i, j + 1);
+                        makePit(i - 1, j);
+                        makePit(i + 1, j);
+                    } else if (knowledgeBase[i][j][9]){ // Add all possible wumpus' to knowledge base
+                        makePossibleWumpus(i, j - 1);
+                        makePossibleWumpus(i, j + 1);
+                        makePossibleWumpus(i - 1, j);
+                        makePossibleWumpus(i + 1, j);
+                    } else if (knowledgeBase[i][j][6]){ // See if a pit is actually a pit
+                        if (isFactSafe(i, j - 1) || isFactSafe(i, j + 1) || isFactSafe(i - 1, j) || isFactSafe(i + 1, j)) {
+                           makeSafe(i, j);
+                        } else if (!isUnknown(i, j - 1) || !isUnknown(i, j + 1) || !isUnknown(i - 1, j) || !isUnknown(i + 1, j)) {
+                            makeFactPit(i, j);
+                        }
+                    } else if (knowledgeBase[i][j][4]){
+                        if (isFactSafe(i, j - 1) || isFactSafe(i, j + 1) || isFactSafe(i - 1, j) || isFactSafe(i + 1, j)) {
+                            makeSafe(i, j);
+                        } else if (!isUnknown(i, j - 1) || !isUnknown(i, j + 1) || !isUnknown(i - 1, j) || !isUnknown(i + 1, j)) {
+                            makeFactWumpus(i, j);
+                        }
+                    }
+                }
+            }
         }
 
-        if(world[explorerY][explorerX+1] == 'p') {
-            sensorList[0] = true;
-        } else if(world[explorerY][explorerX+1] == 'w') {
-            sensorList[1] = true;
-        }
-
-        if(world[explorerY-1][explorerX] == 'p') {
-            sensorList[0] = true;
-        } else if(world[explorerY-1][explorerX] == 'w') {
-            sensorList[1] = true;
-        }
-
-        if(world[explorerY+1][explorerX] == 'p') {
-            sensorList[0] = true;
-        } else if(world[explorerY+1][explorerX] == 'w') {
-            sensorList[1] = true;
-        }
-
-
-        if(lastAction == -1) {   // bump
-            sensorList[2] = true;
-        } else if(lastAction == -2) {  // scream
-            sensorList[3] = true;
-        }
-
-        if(world[explorerY][explorerX] == 'g') {   // gold
-            sensorList[4] = true;
-        }
-
-        return sensorList;
     }
+
+
+    private boolean[] sense() {
+            // sensor list: breezy, stinky, bump, scream, gold
+
+            boolean[] sensorList = new boolean[5];
+
+            // breeze and stench
+            if(world[explorerY][explorerX-1] == 'p') {
+                sensorList[0] = true;
+            } else if(world[explorerY][explorerX-1] == 'w') {
+                sensorList[1] = true;
+            }
+
+            if(world[explorerY][explorerX+1] == 'p') {
+                sensorList[0] = true;
+            } else if(world[explorerY][explorerX+1] == 'w') {
+                sensorList[1] = true;
+            }
+
+            if(world[explorerY-1][explorerX] == 'p') {
+                sensorList[0] = true;
+            } else if(world[explorerY-1][explorerX] == 'w') {
+                sensorList[1] = true;
+            }
+
+            if(world[explorerY+1][explorerX] == 'p') {
+                sensorList[0] = true;
+            } else if(world[explorerY+1][explorerX] == 'w') {
+                sensorList[1] = true;
+            }
+
+            if(world[explorerY][explorerX] == 'g') {   // gold
+                sensorList[4] = true;
+            }
+
+            return sensorList;
+        }
 
     private boolean turnLeft() {
         if(explorerDX == 1 && explorerDY == 0) { // facing east
@@ -527,7 +621,90 @@ public class Solve {
         }
         return false;
     }
+    public void makeFactSafe(int y, int x){
+        try{
+            knowledgeBase[y][x][0] = false;
+            knowledgeBase[y][x][1] = true;
+            knowledgeBase[y][x][2] = true;
+            knowledgeBase[y][x][3] = false;
+            knowledgeBase[y][x][4] = false;
+            knowledgeBase[y][x][5] = false;
+            knowledgeBase[y][x][6] = false;
 
+
+        }catch(IndexOutOfBoundsException e){}
+
+    }
+    public void makeFactPit(int y, int x){
+        try{
+            knowledgeBase[y][x][0] = false;
+            knowledgeBase[y][x][5] = true;
+            knowledgeBase[y][x][4] = false;
+            knowledgeBase[y][x][6] = false;
+        }catch(IndexOutOfBoundsException e){}
+    }
+
+    public void makePit(int y, int x){
+        try{
+            if(!knowledgeBase[y][x][1] && !knowledgeBase[x][y][2] && !knowledgeBase[x][y][7]){
+                knowledgeBase[y][x][0] = false;
+                knowledgeBase[y][x][6] = true;
+            }
+        }catch(IndexOutOfBoundsException e){}
+    }
+
+    public void makeFactWumpus(int y, int x){
+        try{
+            knowledgeBase[y][x][0] = false;
+            knowledgeBase[y][x][3] = true;
+            knowledgeBase[y][x][4] = false;
+            knowledgeBase[y][x][6] = false;
+        }catch(IndexOutOfBoundsException e){}
+    }
+
+    public void makePossibleWumpus(int y, int x){
+        try{
+            if(!knowledgeBase[y][x][1] && !knowledgeBase[x][y][2] && !knowledgeBase[x][y][7]){
+                knowledgeBase[y][x][0] = false;
+                knowledgeBase[y][x][4] = true;
+            }
+        }catch(IndexOutOfBoundsException e){}
+    }
+
+    public void makeObstacle(int y, int x){
+        try{
+            knowledgeBase[y][x][0] = false;
+            knowledgeBase[y][x][7] = true;
+            knowledgeBase[y][x][4] = false;
+            knowledgeBase[y][x][6] = false;
+        }catch(IndexOutOfBoundsException e){}
+    }
+
+    public void makeSafe(int y, int x){
+        try{
+            makeFactSafe(x,y);
+            knowledgeBase[x][y][2] = true;
+            knowledgeBase[x][y][1] = false;
+        }catch(IndexOutOfBoundsException e){}
+    }
+    public boolean isFactSafe(int y, int x){
+        try{
+            return knowledgeBase[x][y][1];
+        }catch(IndexOutOfBoundsException e){
+            return false;
+        }
+    }
+
+    public boolean isUnknown(int y, int x){
+        try{
+            return knowledgeBase[x][y][0]; //True if unknown
+        }catch(IndexOutOfBoundsException e){
+            return false;
+        }
+    }
+
+
+    //=====================================================================================================================
     private int solveRecative(){
         boolean reachedGold = false;
         boolean smelledStench = false;

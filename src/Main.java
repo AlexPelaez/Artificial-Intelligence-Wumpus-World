@@ -11,7 +11,7 @@ public class Main {
         int wumpusKilledReactive = 0;
         int explorerReactiveSuicide = 0;
         int pitFoundReactive = 0;
-        int numberOfWorlds = 10;
+        int numberOfWorlds = 1;
 
 
 
