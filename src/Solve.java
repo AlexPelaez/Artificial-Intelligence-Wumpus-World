@@ -114,8 +114,13 @@ public class Solve {
                 arrowCount--;
                 cost -= 10;
                 smelledStench = false;
-                goForward();
                 world1[explorerY][explorerX] = 'v';
+                if(!goForward())
+                {
+                    turnLeft();
+                    cost--;
+                }
+
                 cost--;
             } else {
                 int move = (int) (Math.random() * 4);
@@ -186,7 +191,11 @@ public class Solve {
                         cost--;
                     }
                 }
-                goForward();
+                if(!goForward())
+                {
+                    turnLeft();
+                    cost--;
+                }
 
             }
             cellsExploredReactive++;
