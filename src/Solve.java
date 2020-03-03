@@ -160,81 +160,110 @@ public class Solve {
                         move = (int) (Math.random() * 4);
 
                     }
-                    else if(topCell){ //top cell was safe
-                        move = 0;
+                    else {
+                        boolean cellChosen = false;
+                        while(cellChosen) {
+                            int cell = (int) (Math.random() * 3);
+                            if (cell == 0) {
+                                if (topCell) { //top cell was safe
+                                    move = 0;
+                                    cellChosen = true;
+                                }
 
-                    }
-                    else if(bottomCell){ // bottom cell was safe
-                        move = 2;
+                            } else if (cell == 1) {
+                                if (bottomCell) { // bottom cell was safe
+                                    move = 2;
+                                    cellChosen = true;
+                                }
+                            } else if (cell == 2) {
+                                if (rightCell) { // right cell was safe
+                                    move = 1;
+                                    cellChosen = true;
+                                }
+                            }
 
-                    }
-                    else if(rightCell){ // right cell was safe
-                        move = 1;
+                        }
 
                     }
 
                 } else if (explorerDX == -1 && explorerDY == 0) { // facing west
+
                     if(!topCell && !bottomCell && !leftCell){ //no cells are safe, move randomly
                         move = (int) (Math.random() * 4);
+                    } else {
+                        boolean cellChosen = false;
+                        while(cellChosen == false) {
+                            int cell = (int) (Math.random() * 3);
+                            if (cell == 0) {
+                                if (topCell) { //top cell was safe
+                                    move = 0;
+                                }
+
+                            } else if (cell == 1) {
+                                if (bottomCell) { // bottom cell was safe
+                                    move = 2;
+                                }
+                            } else if (cell == 2) {
+                                if (leftCell) { // right cell was safe
+                                    move = 3;
+                                }
+                            }
+                        }
 
                     }
-                    else if(bottomCell){ // bottom cell was safe
-                        move = 2;
-
-                    }
-                    else if(leftCell){ // left cell was safe
-                        move = 3;
-
-                    }
-                    else if(topCell){//top cell was safe
-                        move = 0;
-
-                    }
-
 
                 } else if (explorerDX == 0 && explorerDY == 1) { // facing south
                     if(!rightCell && !bottomCell && !leftCell){ //no cells are safe, move randomly
                         move = (int) (Math.random() * 4);
 
-                    }
-                    else if(rightCell){ //right cell was safe
-                        move = 1;
+                    }else {
+                        boolean cellChosen = false;
+                        while (cellChosen == false) {
+                            int cell = (int) (Math.random() * 3);
+                            if (cell == 0) {
+                                if (rightCell) { //top cell was safe
+                                    move = 1;
+                                }
 
+                            } else if (cell == 1) {
+                                if (bottomCell) { // bottom cell was safe
+                                    move = 2;
+                                }
+                            } else if (cell == 2) {
+                                if (leftCell) { // right cell was safe
+                                    move = 3;
+                                }
+                            }
+                        }
                     }
-                    else if(leftCell){ //left cell was safe
-                        move = 3;
-
-                    }
-                    else if(bottomCell){ // bottom cell was safe
-                        move = 2;
-
-                    }
-
 
                 } else if (explorerDX == 0 && explorerDY == -1) { // facing north
                     if(!topCell && !rightCell && !leftCell){ //no cells are safe, move randomly
                         move = (int) (Math.random() * 4);
 
-                    }
-                    else if(leftCell){ //left cell was safe
-                        move = 3;
+                    }else {
+                        boolean cellChosen = false;
+                        while(cellChosen == false) {
+                            int cell = (int) (Math.random() * 3);
+                            if (cell == 0) {
+                                if (topCell) { //top cell was safe
+                                    move = 0;
+                                }
 
-                    }
-                    else if(topCell){ // top cell was safe
-                        move = 0;
-
-                    }
-                    else if(rightCell){ // right cell was safe
-                        move = 1;
+                            } else if (cell == 1) {
+                                if (rightCell) { // bottom cell was safe
+                                    move = 1;
+                                }
+                            } else if (cell == 2) {
+                                if (leftCell) { // right cell was safe
+                                    move = 3;
+                                }
+                            }
+                        }
 
                     }
 
                 }
-
-
-
-
-
 
 
                     if (move == 0) { // move to top cell
