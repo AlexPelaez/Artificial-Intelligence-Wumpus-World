@@ -332,19 +332,19 @@ public class Solve {
     private boolean queryKB(int newY, int newX) { // function to query the knowledge base. takes in desired postion and returns true if safe otherwise false
         // sensor list: breeze, stench, bump, scream, gold
         // KnowledgeBase: unknown 0 , factSafe 1 , safe 2, factWumpus 3, wumpus 4, factPit 5, pit 6, obstacle 7, breeze 8, stench 9, glitter 10
-        if(knowledgeBase[newY][newX][1]){
-            return true;
-        }
-        else if(knowledgeBase[newY][newX][2]){
-            return true;
-        }
-        else if(knowledgeBase[newY][newX][3] || knowledgeBase[newY][newX][5] ){
+        if(isOstacle(newY, newX)){
             return false;
         }
-        else if(knowledgeBase[newY][newX][7]){
+        else if(isFactSafe(newY, newX)){
+            return true;
+        }
+        else if(isSafe(newY, newX)){
+            return true;
+        }
+        else if(isFactWumpus(newY, newX) || isFactPit(newY, newX)){
             return false;
         }
-        else if(knowledgeBase[newY][newX][4] || knowledgeBase[newY][newX][6] ){
+        else if(isWumpus(newY, newX) || isPit(newY, newX) ){
             return false;
         }
         else{
@@ -464,7 +464,7 @@ public class Solve {
 
 
     private boolean[] sense() { // sense our current cell
-            // sensor list: breezy, stinky, bump, scream, gold
+            // sensor list: breeze, stench, bump, scream, gold
 
             boolean[] sensorList = new boolean[5];
 
