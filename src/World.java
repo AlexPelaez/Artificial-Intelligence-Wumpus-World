@@ -14,16 +14,16 @@ public class World {
         this.pit = p;
         this.obs = o;
         this.wumpus = w;
-        world = new char[][] {
-        { 'o', 'o', 'o', 'o', 'o', 'o', 'o'},
-        { 'o', 'x', 'o', 'w', 'w', 'x', 'o'},
-        { 'o', 'p', 'o', 'x', 'o', 'w' ,'o'},
-        { 'o', 'x', 'o', 'x', 'x', 'w', 'o'},
-        { 'o', 'x', 'x', 'x', 'w', 'w' ,'o'},
-        { 'o', 'x', 'x', 'a', 'w', 'g', 'o'},
-        { 'o', 'o', 'o', 'o', 'o', 'o', 'o'}
-        };
-        wumpusCount = 7;
+//        world = new char[][] {
+//        { 'o', 'o', 'o', 'o', 'o', 'o', 'o'},
+//        { 'o', 'x', 'o', 'w', 'w', 'x', 'o'},
+//        { 'o', 'p', 'o', 'x', 'o', 'w' ,'o'},
+//        { 'o', 'x', 'o', 'x', 'x', 'w', 'o'},
+//        { 'o', 'x', 'x', 'x', 'w', 'w' ,'o'},
+//        { 'o', 'x', 'x', 'a', 'w', 'g', 'o'},
+//        { 'o', 'o', 'o', 'o', 'o', 'o', 'o'}
+//        };
+//        wumpusCount = 7;
 //        world[0] = {'o', 'o', 'o', 'o', 'o', 'o', 'o'};
 //        o x o w w x o
 //        o p o x o w o
@@ -31,7 +31,7 @@ public class World {
 //        o x x x w w o
 //        o x x a w g o
 //        o o o o o o o
-//        populateWorld();
+        populateWorld();
 //        printWorld();
     }
 
