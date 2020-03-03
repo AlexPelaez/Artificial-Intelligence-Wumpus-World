@@ -13,8 +13,20 @@ public class Main {
         int pitFoundReactive = 0;
         int numberOfWorlds = 10;
 
+
+
+        int cellsExploredKB = 0;
+        int goldFoundKB= 0;
+        int wumpusFoundKB=0;
+        int wumpusKilledKB=0;
+        int explorerKBSuicide=0;
+        int pitFoundKB=0;
+
+
+
         double avgCost = 0;
         double avgCells = 0;
+
 
 
 //        World w = new World(size, pit, obs, wumpus);
@@ -32,7 +44,7 @@ public class Main {
             explorerReactiveSuicide += solves[i].getExplorerReactiveSuicide();
             pitFoundReactive += solves[i].getPitFoundReactive();
             System.out.println(avgCost);
-            avgCost += (double)(solves[i].getCost());
+            avgCost += (double)(solves[i].getCostKB());
         }
         avgCost = avgCost / (double)(numberOfWorlds);
         avgCells = cellsExploredReactive /numberOfWorlds;
