@@ -37,15 +37,23 @@ public class Solve {
         explorerY = startLocation[0];
         explorerX = startLocation[1];
         this.knowledgeBase = new boolean[world.length][world.length][8];
-        solveRecative();
+//        solveRecative();
+
+        this.world = world;
+        this.wumpusCount = wumpusCount;
+        this.startLocation = getStartLocation();
+        arrowCount = wumpusCount;
+        remainingWumpusCount = wumpusCount;
+        explorerY = startLocation[0];
+        explorerX = startLocation[1];
+
+        solveKnowdledgeBased();
     }
 
-    private int solveRecative(){
+    private int solveKB(){
         boolean reachedGold = false;
         boolean smelledStench = false;
         world1 = world;
-
-
         int cost = 0;
         while (!reachedGold){
 //            printWorld1();
@@ -203,7 +211,9 @@ public class Solve {
         return cost;
     }
 
-    private int solveUnification() {
+
+
+    private int solveKnowdledgeBased() {
         boolean reachedGold = false;
         int cost = 0;
 
@@ -502,6 +512,167 @@ public class Solve {
             }
         }
         return false;
+    }
+
+    private int solveRecative(){
+        boolean reachedGold = false;
+        boolean smelledStench = false;
+        world1 = world;
+        cost = 0;
+        while (!reachedGold){
+//            printWorld1();
+//            System.out.println();
+//            System.out.println("X: " + explorerX);
+//            System.out.println("Y: " + explorerY);
+            cost--;
+            if(world[explorerY][explorerX] == 'g'){
+                goldFoundReactive++;
+                System.out.println("Gold found");
+                reachedGold = true;
+                return cost + 1000;
+
+            }
+            else if(world[explorerY][explorerX] == 'p'){
+                pitFoundReactive++;
+                System.out.println("Death by pit");
+                reachedGold = true;
+                return cost - 10000;
+
+            }
+            else if(world[explorerY][explorerX] == 'w'){
+                wumpusFoundReactive++;
+                System.out.println("Death by wumpus");
+                return cost - 10000;
+            }
+            else if(cost == 100000000){
+//                System.out.println("Death by suicide");
+                explorerReactiveSuicide++;
+                return cost;
+
+            } else{
+                world1[explorerY][explorerX] = 'v';
+                printWorld1();
+                System.out.println();
+                System.out.println("X: " + explorerX);
+                System.out.println("Y: " + explorerY);
+
+                if (world[explorerY][explorerX - 1] == 'w') {
+                    smelledStench = true;
+                }
+
+                if(world[explorerY][explorerX+1] == 'w') {
+                    smelledStench = true;
+                }
+
+                if(world[explorerY-1][explorerX] == 'w') {
+                    smelledStench = true;
+                }
+                if(world[explorerY+1][explorerX] == 'w') {
+                    smelledStench = true;
+
+                }
+
+            }
+
+            if(smelledStench == true && arrowCount !=  0){
+                System.out.println("arrow Shot");
+                System.out.println("DX: " + explorerDX);
+                System.out.println("DY: " + explorerDY);
+                if(shootArrow()){
+                    System.out.println("Wumpus Killed");
+
+                    wumpusKilledReactive++;
+                }
+                arrowCount--;
+                cost -= 10;
+                smelledStench = false;
+                world1[explorerY][explorerX] = 'v';
+                if(!goForward())
+                {
+                    turnLeft();
+                    cost--;
+                }
+
+                cost--;
+            } else {
+                int move = (int) (Math.random() * 4);
+
+                if (move == 0) {
+                    System.out.println("move North");
+                    if (explorerDX == 1 && explorerDY == 0) { // facing east
+
+                        turnLeft();
+                        cost--;
+
+                    } else if (explorerDX == -1 && explorerDY == 0) { // facing west
+                        turnRight();
+                        cost--;
+
+                    } else if (explorerDX == 0 && explorerDY == 1) { // facing south
+                        turnLeft();
+                        cost--;
+                        turnLeft();
+                        cost--;
+                    }
+                } else if (move == 1) {
+                    System.out.println("move East");
+                    if (explorerDX == -1 && explorerDY == 0) { // facing west
+                        turnLeft();
+                        cost--;
+                        turnLeft();
+                        cost--;
+
+                    } else if (explorerDX == 0 && explorerDY == 1) { // facing south
+                        turnLeft();
+                        cost--;
+
+                    } else if (explorerDX == 0 && explorerDY == -1) { // facing north
+                        turnRight();
+                        cost--;
+                    }
+
+
+                } else if (move == 2) {
+                    System.out.println("move south");
+                    if (explorerDX == 1 && explorerDY == 0) { // facing east
+                        turnRight();
+                        cost--;
+                    } else if (explorerDX == -1 && explorerDY == 0) { // facing west
+                        turnLeft();
+                        cost--;
+                    } else if (explorerDX == 0 && explorerDY == -1) { // facing north
+                        turnLeft();
+                        cost--;
+                        turnLeft();
+                        cost--;
+                    }
+                } else if (move == 3) {
+                    System.out.println("move West");
+                    if (explorerDX == 1 && explorerDY == 0) { // facing east
+                        turnLeft();
+                        cost--;
+                        turnLeft();
+                        cost--;
+
+                    } else if (explorerDX == 0 && explorerDY == 1) { // facing south
+                        turnRight();
+                        cost--;
+
+                    } else if (explorerDX == 0 && explorerDY == -1) { // facing north
+                        turnLeft();
+                        cost--;
+                    }
+                }
+                if(!goForward())
+                {
+                    turnLeft();
+                    cost--;
+                }
+
+            }
+            cellsExploredReactive++;
+        }
+        return cost;
     }
 
     private int[] getStartLocation() {
