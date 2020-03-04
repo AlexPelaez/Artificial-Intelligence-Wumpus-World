@@ -1,6 +1,3 @@
-/**
- * Created by Alex on 2/27/20.
- */
 
 public class Solve {
     private static final int DEATH_COST = 10000;
@@ -24,9 +21,6 @@ public class Solve {
     private int goldFoundKB;
     private int wumpusFoundKB;
     private int wumpusKilledKB;
-
-
-
     private int explorerKBSuicide;
     private int pitFoundKB;
 
@@ -49,7 +43,7 @@ public class Solve {
         explorerY = startLocation[0];
         explorerX = startLocation[1];
         this.knowledgeBase = new boolean[world.length][world.length][11];
-//        solveRecative();
+        solveRecative();
 
         this.world = world;
         this.wumpusCount = wumpusCount;
@@ -58,7 +52,7 @@ public class Solve {
         remainingWumpusCount = wumpusCount;
         explorerY = startLocation[0];
         explorerX = startLocation[1];
-        solveKB();
+//        solveKB();
 //        solveKnowdledgeBased();
     }
 
@@ -82,7 +76,16 @@ public class Solve {
                 goldFoundKB++;
                 System.out.println("Gold found");
                 reachedGold = true;
+                printWorld();
                 costKB = costKB + 1000;
+                return costKB;
+
+            } else if(costKB < -100000000){ // if youve been walking around for too long, commit suicide
+                System.out.println("Death by suicide");
+                printWorld();
+                reachedGold = true;
+                explorerKBSuicide++;
+                costKB = costKB - 10000;
                 return costKB;
 
             }
@@ -90,24 +93,20 @@ public class Solve {
                 pitFoundKB++;
                 System.out.println("Death by pit");
                 reachedGold = true;
+                printWorld();
                 costKB = costKB - 10000;
                 return costKB;
 
             }
             else if(world[explorerY][explorerX] == 'w'){ //if dead by wumpus terminate
                 wumpusFoundKB++;
-//                System.out.println("Death by wumpus");
-                costKB =costKB - 10000;
-                return costKB;
-            }
-            else if(costKB <= -100000000){ // if youve been walking around for too long, commit suicide
-//                System.out.println("Death by suicide");
+                System.out.println("Death by wumpus");
                 printWorld();
-                explorerKBSuicide++;
+                reachedGold = true;
                 costKB =costKB - 10000;
                 return costKB;
-
             } else{
+                smelledStench = false;
                 boolean[] sensorList; // boolean array to hold senses at each poistion
                 sensorList = sense(); //sense at each position
                 updateKnowledgeBase(sensorList); //add new information to knowledge base
@@ -197,15 +196,18 @@ public class Solve {
                             if (cell == 0) {
                                 if (topCell) { //top cell was safe
                                     move = 0;
+                                    cellChosen = true;
                                 }
 
                             } else if (cell == 1) {
                                 if (bottomCell) { // bottom cell was safe
                                     move = 2;
+                                    cellChosen = true;
                                 }
                             } else if (cell == 2) {
                                 if (leftCell) { // right cell was safe
                                     move = 3;
+                                    cellChosen = true;
                                 }
                             }
                         }
@@ -223,15 +225,18 @@ public class Solve {
                             if (cell == 0) {
                                 if (rightCell) { //top cell was safe
                                     move = 1;
+                                    cellChosen = true;
                                 }
 
                             } else if (cell == 1) {
                                 if (bottomCell) { // bottom cell was safe
                                     move = 2;
+                                    cellChosen = true;
                                 }
                             } else if (cell == 2) {
                                 if (leftCell) { // right cell was safe
                                     move = 3;
+                                    cellChosen = true;
                                 }
                             }
                         }
@@ -248,15 +253,18 @@ public class Solve {
                             if (cell == 0) {
                                 if (topCell) { //top cell was safe
                                     move = 0;
+                                    cellChosen = true;
                                 }
 
                             } else if (cell == 1) {
                                 if (rightCell) { // bottom cell was safe
                                     move = 1;
+                                    cellChosen = true;
                                 }
                             } else if (cell == 2) {
                                 if (leftCell) { // right cell was safe
                                     move = 3;
+                                    cellChosen = true;
                                 }
                             }
                         }
@@ -352,9 +360,9 @@ public class Solve {
                     }
 
                 }
-
-            }
             cellsExploredKB++;
+            }
+
         return costKB;
     }
 
@@ -364,10 +372,10 @@ public class Solve {
         if(isOstacle(newY, newX)){
             return false;
         }
-        else if(isFactSafe(newY, newX)){
+        else if(isSafe(newY, newX)){
             return true;
         }
-        else if(isSafe(newY, newX)){
+        else if(isFactSafe(newY, newX)){
             return true;
         }
         else if(isFactWumpus(newY, newX) || isFactPit(newY, newX)){
@@ -690,9 +698,6 @@ public class Solve {
         return false;
     }
 
-
-
-    //=====================================================================================================================
     private int solveRecative(){
         boolean reachedGold = false;
         boolean smelledStench = false;
@@ -761,27 +766,8 @@ public class Solve {
 
             }
 
-            if(smelledStench == true && arrowCount !=  0){
-//                System.out.println("arrow Shot");
-//                System.out.println("DX: " + explorerDX);
-//                System.out.println("DY: " + explorerDY);
-                if(shootArrow()){
-//                    System.out.println("Wumpus Killed");
-
-                    wumpusKilledReactive++;
-                }
-                arrowCount--;
-                cost -= 10;
-                smelledStench = false;
-                world[explorerY][explorerX] = 'v';
-                if(!goForward())
-                {
-                    turnLeft();
-                    cost--;
-                }
-
-                cost--;
-            } else {
+//            ExplorerKBSuicide
+                if(true){
                 int move = (int) (Math.random() * 4);
 
                 if (move == 0) {
