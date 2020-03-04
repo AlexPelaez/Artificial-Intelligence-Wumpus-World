@@ -43,7 +43,7 @@ public class Solve {
         explorerY = startLocation[0];
         explorerX = startLocation[1];
         this.knowledgeBase = new boolean[world.length][world.length][11];
-        solveRecative();
+//        solveRecative();
 
         this.world = world;
         this.wumpusCount = wumpusCount;
@@ -52,7 +52,7 @@ public class Solve {
         remainingWumpusCount = wumpusCount;
         explorerY = startLocation[0];
         explorerX = startLocation[1];
-//        solveKB();
+        solveKB();
 //        solveKnowdledgeBased();
     }
 
