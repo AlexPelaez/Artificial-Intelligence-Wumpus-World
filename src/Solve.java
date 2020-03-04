@@ -696,7 +696,6 @@ public class Solve {
     private int solveRecative(){
         boolean reachedGold = false;
         boolean smelledStench = false;
-//        help1
         cost = 0;
         while (!reachedGold){
 //            printWorld1();
